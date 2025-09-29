@@ -14,7 +14,7 @@ func main
 	versionStr = "Version " + aPackageInfo[:version]
     versionPad = floor((47 - len(versionStr)) / 2)
     banner[:versionLine] = colorText([:text = "│" + space(versionPad), :color = :BRIGHT_BLUE]) + colorText([:text = versionStr, :color = :YELLOW, :style = :BOLD]) + colorText([:text = space(47-versionPad-len(versionStr)) + "│", :color = :BRIGHT_BLUE])
-    authorStr = "Author: ysdragon"
+    authorStr = "Author: Youssef Saeed (ysdragon)"
     authorPad = floor((47 - len(authorStr)) / 2)
     banner[:authorLine] = colorText([:text = "│" + space(authorPad), :color = :BRIGHT_BLUE]) + colorText([:text = authorStr, :color = :MAGENTA]) + colorText([:text = space(47-authorPad-len(authorStr)) + "│", :color = :BRIGHT_BLUE])
     urlStr = "https://github.com/ysdragon"
