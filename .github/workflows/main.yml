@@ -20,6 +20,9 @@ on:
     - 'src/jansson/**'
 
 jobs:
+  alpine:
+    uses: ./.github/workflows/alpine_build.yml
+
   freebsd:
     uses: ./.github/workflows/freebsd_build.yml
 
@@ -34,7 +37,7 @@ jobs:
 
   update-libs:
     runs-on: ubuntu-latest
-    needs: [ freebsd, macos, ubuntu, windows ]
+    needs: [ alpine, freebsd, macos, ubuntu, windows ]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
 
     permissions:

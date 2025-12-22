@@ -1,0 +1,55 @@
+name: Alpine Build
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+        - arch: x86_64
+          platform: linux/amd64
+          name: alpine-amd64
+        - arch: aarch64
+          platform: linux/arm64
+          name: alpine-arm64
+
+    steps:
+    - name: Checkout ring-simplejson
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Build in Alpine container
+      run: |
+        docker run --rm --platform ${{ matrix.platform }} \
+          -v ${{ github.workspace }}:/workspace \
+          -w /workspace \
+          alpine:latest /bin/sh -c "
+            apk add --no-cache cmake make gcc g++ musl-dev linux-headers git
+            
+            # Clone Ring Language
+            git clone --depth 1 https://github.com/ringpackages/ringsrc.git ring
+            
+            # Build Ring Language
+            cd ring/language
+            cmake . -DCMAKE_BUILD_TYPE=Release
+            make install
+            cd /workspace
+            
+            # Build ring-simplejson lib
+            rm -rf lib
+            cmake . -DCMAKE_BUILD_TYPE=Release -DRING_ROOT=/workspace/ring -DMUSL=ON
+            make
+          "
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ring-simplejson-${{ matrix.name }}
+        path: lib
