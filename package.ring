@@ -45,7 +45,9 @@ aPackageInfo = [
 	],
 	:linuxfiles = 	[
 		"lib/linux/amd64/libring_simplejson.so",
-		"lib/linux/arm64/libring_simplejson.so"
+		"lib/linux/arm64/libring_simplejson.so",
+		"lib/linux/musl/amd64/libring_simplejson.so",
+		"lib/linux/musl/arm64/libring_simplejson.so"
 	],
 	:ubuntufiles = 	[
 
