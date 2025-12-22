@@ -41,6 +41,37 @@ cStyles = [
 	:HIDDEN = "8"
 ]
 
+# Unicode symbols for CLI output
+cSymbols = [
+	# Status indicators
+	:TICK       = "✔",
+	:CROSS      = "✖",
+	:WARNING    = "⚠",
+	:INFO       = "ℹ",
+	:STAR       = "★",
+	:BULLET     = "•",
+	:POINTER    = "❯",
+	:ELLIPSIS   = "…",
+	
+	# Progress indicators
+	:CIRCLE_EMPTY    = "◯",
+	:CIRCLE_FILLED   = "◉",
+	:CIRCLE_DOTTED   = "◌",
+	:SQUARE_FILLED   = "◼",
+	:SQUARE_EMPTY    = "◻",
+	
+	# Decorative
+	:ARROW_RIGHT = "→",
+	:ARROW_LEFT  = "←",
+	:ARROW_UP    = "↑",
+	:ARROW_DOWN  = "↓",
+	:LINE        = "─",
+	:DOUBLE_LINE = "═",
+	:HEART       = "♥",
+	:PLAY        = "▶",
+	:STOP        = "■"
+]
+
 # ============================================================================
 # Color functions
 # ============================================================================
@@ -76,27 +107,36 @@ func colorText(params)
 # ============================================================================
 
 func printError cMessage
-	? colorText([
-		:text  = "Error: " + cMessage,
-		:color = :BRIGHT_RED,
-		:style = :BOLD
-	])
+	? colorText([:text = " " + cSymbols[:CROSS] + " ", :color = :BRIGHT_RED, :style = :BOLD]) +
+	  colorText([:text = cMessage, :color = :BRIGHT_RED])
 
 func printWarning cMessage
-	? colorText([
-		:text  = "  -> " + cMessage,
-		:color = :YELLOW
-	])
+	? colorText([:text = " " + cSymbols[:WARNING] + " ", :color = :YELLOW, :style = :BOLD]) +
+	  colorText([:text = cMessage, :color = :YELLOW])
 
 func printSuccess cMessage
-	? colorText([
-		:text  = cMessage,
-		:color = :BRIGHT_GREEN,
-		:style = :BOLD
-	])
+	? colorText([:text = " " + cSymbols[:TICK] + " ", :color = :BRIGHT_GREEN, :style = :BOLD]) +
+	  colorText([:text = cMessage, :color = :BRIGHT_GREEN])
 
 func printInfo cMessage
-	? colorText([
-		:text  = "  -> " + cMessage,
-		:color = :CYAN
-	])
+	? colorText([:text = " " + cSymbols[:INFO] + " ", :color = :CYAN]) +
+	  colorText([:text = cMessage, :color = :WHITE])
+
+func printStep cMessage
+	? colorText([:text = " " + cSymbols[:POINTER] + " ", :color = :BRIGHT_BLUE, :style = :BOLD]) +
+	  colorText([:text = cMessage, :color = :WHITE])
+
+func printSubStep cMessage
+	? colorText([:text = "   " + cSymbols[:ARROW_RIGHT] + " ", :color = :WHITE, :style = :DIM]) +
+	  colorText([:text = cMessage, :color = :WHITE, :style = :DIM])
+
+func printHeader cMessage
+	cLine = ""
+	for i = 1 to len(cMessage) + 4
+		cLine += cSymbols[:LINE]
+	next
+	? ""
+	? colorText([:text = " " + cLine, :color = :BRIGHT_BLUE, :style = :DIM])
+	? colorText([:text = "  " + cMessage, :color = :BRIGHT_WHITE, :style = :BOLD])
+	? colorText([:text = " " + cLine, :color = :BRIGHT_BLUE, :style = :DIM])
+	? ""
