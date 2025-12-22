@@ -9,15 +9,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.arch == 'amd64' && 'ubuntu-latest' || 'ubuntu-24.04-arm' }}
     strategy:
       matrix:
         include:
-        - arch: x86_64
-          platform: linux/amd64
+        - arch: amd64
           name: alpine-amd64
-        - arch: aarch64
-          platform: linux/arm64
+        - arch: arm64
           name: alpine-arm64
 
     steps:
@@ -26,12 +24,9 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
-
     - name: Build in Alpine container
       run: |
-        docker run --rm --platform ${{ matrix.platform }} \
+        docker run --rm \
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
           alpine:latest /bin/sh -c "
