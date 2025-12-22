@@ -143,14 +143,14 @@ class Installer
 		ok
 
 		printError(C_PRETTY_NAME + " library not found!")
-		printWarning("Expected location: " + cLibPath)
+		printSubStep("Expected location: " + cLibPath)
 		if lIsMusl
 			printInfo("Detected musl libc environment (Alpine Linux, etc.)")
-			printInfo("Ensure the library is built for: " + cOSName + "/musl/" + cArchName)
+			printSubStep("Ensure library is built for: " + cOSName + "/musl/" + cArchName)
 		else
-			printInfo("Ensure the library is built for: " + cOSName + "/" + cArchName)
+			printSubStep("Ensure library is built for: " + cOSName + "/" + cArchName)
 		ok
-		printInfo("Build instructions: " + buildPath([cPackagePath, "README.md"]))
+		printInfo("See build instructions: " + buildPath([cPackagePath, "README.md"]))
 		return false
 
 	# ========================================================================
@@ -158,15 +158,29 @@ class Installer
 	# ========================================================================
 
 	func performInstallation
+		printHeader("Installing " + C_PRETTY_NAME)
+		
 		try
+			printStep("Installing library for " + cOSName + "/" + cArchName + "…")
 			installLibrary()
+			printSuccess("Library installed")
+			
+			printStep("Copying examples…")
 			copyExamples()
+			printSuccess("Examples copied")
+			
+			printStep("Updating Ring configuration…")
 			updateRingConfig()
+			printSuccess("Configuration updated")
+			
+			printStep("Setting up Ring2EXE…")
 			setupRing2EXE()
+			printSuccess("Ring2EXE configured")
+			
 			showSuccessMessage()
 		catch
 			printError("Failed to install " + C_PRETTY_NAME + "!")
-			printWarning("Details: " + cCatchError)
+			printSubStep("Details: " + cCatchError)
 		done
 
 	func installLibrary
@@ -268,9 +282,12 @@ class Installer
 ]'
 
 	func showSuccessMessage
-		printSuccess("Successfully installed " + C_PRETTY_NAME + "!")
-		printInfo("Samples available in: " + cSamplesPath)
-		printInfo("Package examples: " + cExamplesPath)
+		? ""
+		printSuccess(C_PRETTY_NAME + " installed successfully!")
+		? ""
+		printInfo("Samples: " + cSamplesPath)
+		printInfo("Examples: " + cExamplesPath)
+		? ""
 
 	# ========================================================================
 	# Utility Methods
