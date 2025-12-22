@@ -2,6 +2,10 @@ name: macOS Build
 
 on:
   workflow_call:
+    inputs:
+      ring-version:
+        required: true
+        type: string
 
 jobs:
   build:
@@ -25,8 +29,9 @@ jobs:
     - name: Clone Ring Language
       uses: actions/checkout@v4
       with:
-        repository: ringpackages/ringsrc
+        repository: ring-lang/ring
         path: ring
+        ref: ${{ inputs.ring-version }}
 
     - name: Build and Install Ring Language
       run: |

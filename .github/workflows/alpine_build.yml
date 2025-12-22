@@ -2,6 +2,10 @@ name: Alpine Build
 
 on:
   workflow_call:
+    inputs:
+      ring-version:
+        required: true
+        type: string
 
 jobs:
   build:
@@ -34,7 +38,7 @@ jobs:
             apk add --no-cache cmake make gcc g++ musl-dev linux-headers git
             
             # Clone Ring Language
-            git clone --depth 1 https://github.com/ringpackages/ringsrc.git ring
+            git clone --branch ${{ inputs.ring-version }} --depth 1 https://github.com/ring-lang/ring.git ring
             
             # Build Ring Language
             cd ring/language

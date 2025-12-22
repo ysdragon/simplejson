@@ -2,6 +2,10 @@ name: FreeBSD Build
 
 on:
   workflow_call:
+    inputs:
+      ring-version:
+        required: true
+        type: string
 
 jobs:
   build:
@@ -37,7 +41,7 @@ jobs:
 
         run: |
           # Clone Ring Language
-          git clone https://github.com/ringpackages/ringsrc.git ring
+          git clone --branch ${{ inputs.ring-version }} --depth 1 https://github.com/ring-lang/ring.git ring
           cd ring
 
           # Set RING environment variable
