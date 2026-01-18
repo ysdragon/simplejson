@@ -53,10 +53,11 @@ jobs:
           ninja install
           cd ../..
 
-          rm -rf lib
+          rm -rf build lib
 
           # Build ring-simplejson lib
-          cmake . -DCMAKE_BUILD_TYPE=Release -GNinja
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -GNinja
           ninja
 
     - name: Upload artifacts

@@ -49,8 +49,11 @@ jobs:
     - name: Configure and Build ring-simplejson lib for ${{ matrix.arch_name }}
       shell: cmd
       run: |
-        rmdir /s /q lib
-        cmake . -A ${{ matrix.arch }}
+        if exist build rmdir /s /q build
+        if exist lib rmdir /s /q lib
+        mkdir build
+        cd build
+        cmake .. -A ${{ matrix.arch }}
         cmake --build . --config Release
 
     - name: Upload artifacts

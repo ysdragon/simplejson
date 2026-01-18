@@ -44,8 +44,9 @@ jobs:
 
     - name: Build ring-simplejson lib
       run: |
-        rm -rf lib
-        cmake . -DCMAKE_BUILD_TYPE=Release
+        rm -rf build lib
+        mkdir build && cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
         make
 
     - name: Upload artifacts

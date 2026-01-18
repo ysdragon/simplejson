@@ -42,8 +42,9 @@ jobs:
             cd /workspace
             
             # Build ring-simplejson lib
-            rm -rf lib
-            cmake . -DCMAKE_BUILD_TYPE=Release -DRING_ROOT=/workspace/ring -DMUSL=ON
+            rm -rf build lib
+            mkdir build && cd build
+            cmake .. -DCMAKE_BUILD_TYPE=Release -DRING_ROOT=/workspace/ring -DMUSL=ON
             make
           "
 
