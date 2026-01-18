@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
-project(SimpleJSON LANGUAGES C)
+project(SimpleJSON LANGUAGES CXX)
 include(FetchContent)
+
+# Require C++23 for Glaze
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(RING_ROOT_DEFAULT "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 if(DEFINED ENV{RING})
@@ -91,53 +95,47 @@ else()
     set(LIB_DEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/${OS_DIR}/${ARCH_DIR}")
 endif()
 
-# Configure Jansson build options
-set(JANSSON_BUILD_SHARED_LIBS OFF CACHE BOOL "Build Jansson as a static library")
-set(USE_URANDOM ON CACHE BOOL "Use urandom for random number generation")
-set(USE_WINDOWS_CRYPTOAPI ON CACHE BOOL "Use Windows CryptoAPI for random number generation")
-set(USE_DTOA ON CACHE BOOL "Use dtoa for double conversion")
-set(JANSSON_STATIC_CRT OFF CACHE BOOL "Do not use static CRT on Windows")
-set(JANSSON_EXAMPLES OFF CACHE BOOL "Do not build Jansson examples")
-set(JANSSON_COVERAGE OFF CACHE BOOL "Do not build with coverage")
-set(JANSSON_BUILD_DOCS OFF CACHE BOOL "Do not build Jansson documentation")
-set(JANSSON_WITHOUT_TESTS ON CACHE BOOL "Do not build Jansson tests")
-
-# Add jansson as a subdirectory to build it
-if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/jansson/CMakeLists.txt")
-    message(STATUS "jansson source not found, fetching from GitHub...")
+# Add glaze as a subdirectory (header-only, but has CMake config)
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/glaze/CMakeLists.txt")
+    message(STATUS "glaze source not found, fetching from GitHub...")
     FetchContent_Declare(
-        jansson
-        GIT_REPOSITORY https://github.com/akheron/jansson.git
-        GIT_TAG        v2.14.1
+        glaze
+        GIT_REPOSITORY https://github.com/stephenberry/glaze.git
+        GIT_TAG        v7.0.1
     )
-    FetchContent_MakeAvailable(jansson)
+    FetchContent_MakeAvailable(glaze)
 else()
-    message(STATUS "jansson found locally, adding as subdirectory.")
-    add_subdirectory(src/jansson)
+    message(STATUS "glaze found locally, adding as subdirectory.")
+    add_subdirectory(src/glaze)
 endif()
 
 # Create the Ring SimpleJSON extension shared library
 add_library(ring_simplejson SHARED
-	${CMAKE_CURRENT_SOURCE_DIR}/src/ring_simplejson.c
+	${CMAKE_CURRENT_SOURCE_DIR}/src/ring_simplejson.cpp
 )
 
 # Include directories
 target_include_directories(ring_simplejson PRIVATE
 	${RING_INCLUDE}
-	${jansson_SOURCE_DIR}/src
-	${jansson_BINARY_DIR}/include
 )
 
 # Link libraries
 target_link_libraries(ring_simplejson PRIVATE
 	Ring::Ring
-	jansson
+	glaze::glaze
 )
+
+if(MSVC)
+    target_compile_options(ring_simplejson PRIVATE /Zc:preprocessor)
+endif()
+
+# Reduce binary size by disabling forced inlining
+# target_compile_definitions(ring_simplejson PRIVATE GLZ_DISABLE_ALWAYS_INLINE)
 
 target_compile_options(ring_simplejson PRIVATE
     $<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:
-        $<$<C_COMPILER_ID:MSVC>:/O2>
-        $<$<NOT:$<C_COMPILER_ID:MSVC>>:-O3>
+        $<$<CXX_COMPILER_ID:MSVC>:/O2>
+        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-O3>
         -DNDEBUG
     >
 )
