@@ -64,11 +64,17 @@ jobs:
     - name: Copy artifacts to lib directory
       run: |
         mkdir -p lib
+        echo "=== Artifacts structure ==="
+        find artifacts -type f
+        echo "=== Copying artifacts ==="
         for artifact_dir in artifacts/*/; do
           if [ -d "$artifact_dir" ]; then
+            echo "Copying from: $artifact_dir"
             cp -a "${artifact_dir}." "lib/"
           fi
         done
+        echo "=== Final lib structure ==="
+        find lib -type f
 
     - name: Commit and push changes
       run: |
