@@ -15,12 +15,9 @@ extern "C"
 
 #include <algorithm>
 #include <cmath>
-#include <cstdint>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <variant>
-#include <vector>
 
 static constexpr const char *GLAZE_VERSION_STRING = "7.0.1";
 
