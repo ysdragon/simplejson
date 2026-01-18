@@ -15,5 +15,3 @@ Thumbs.db
 *.cf
 
 .clangd
-
-tests/
