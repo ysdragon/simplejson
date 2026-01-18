@@ -1,0 +1,39 @@
+name: Test CI
+
+on:
+  workflow_run:
+    workflows: ["Build and Update"]
+    types:
+      - completed
+    branches: [master]
+  
+  push:
+    branches: [master]
+    paths:
+      - '**.ring'
+      - 'tests/**'
+      - 'examples/**'
+  pull_request:
+    paths:
+      - '**.ring'
+      - 'tests/**'
+      - 'examples/**'
+
+jobs:
+  test:
+    if: |
+      github.event_name != 'workflow_run' || 
+      github.event.workflow_run.conclusion == 'success'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Run tests
+      uses: ysdragon/ring-action@v1.3.3
+      with:
+        file: "tests/simplejson_test.ring"
