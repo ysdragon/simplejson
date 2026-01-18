@@ -1,3 +1,8 @@
+// Prevent Windows min/max macros from conflicting with std::min/std::max
+#ifdef _WIN32
+#define NOMINMAX
+#endif
+
 #include "glaze/base64/base64.hpp"
 #include "glaze/cbor.hpp"
 #include "glaze/csv.hpp"
