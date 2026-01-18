@@ -22,26 +22,13 @@
 
 ## ✨ Features
 
--   **Parse JSON Strings**: Convert JSON strings into Ring data structures (lists)
--   **Generate JSON**: Convert Ring lists into formatted JSON strings
--   **High Performance**: Built on the fast Glaze C++ library for optimal speed
--   **Cross-Platform**: Works seamlessly across Windows, Linux, macOS, and FreeBSD
--   **Error Handling**: Comprehensive error reporting for malformed JSON
--   **JSON Validation**: Validate JSON strings without parsing
--   **JSON Pointer**: Access nested values using RFC 6901 JSON Pointer syntax
--   **JSON Manipulation**: Merge objects, get keys, check key existence
--   **Pretty Print & Minify**: Format or compact JSON strings
--   **File I/O**: Read and write JSON files directly
--   **Binary Formats**: Convert to/from BEVE and CBOR binary encodings
--   **JSON Patch**: Apply RFC 6902 JSON Patch operations and generate diffs
--   **JSON Merge Patch**: Apply RFC 7386 Merge Patch operations
--   **NDJSON**: Encode and decode newline-delimited JSON (JSON Lines)
--   **JSON Comparison**: Compare JSON documents for equality
--   **JSON Analysis**: Get size, depth, and sort keys
--   **Base64**: Encode and decode Base64 data
--   **CSV Support**: Convert between CSV and JSON formats
--   **TOML Support**: Convert between TOML and JSON formats
--   **JSON Comments**: Parse JSON with comments (JSONC)
+-   ⚡ **High Performance**: Built on the blazing-fast Glaze C++ library
+-   🌍 **Cross-Platform**: Windows, Linux, macOS, and FreeBSD
+-   📝 **Parse & Generate**: Encode/decode JSON with pretty print support
+-   🔧 **Manipulation**: Merge, query, validate, compare JSON documents
+-   🔀 **Format Conversion**: CSV, TOML, BEVE, CBOR, NDJSON, Base64
+-   📋 **RFC Support**: JSON Pointer, JSON Patch, JSON Merge Patch
+-   💬 **JSONC**: Parse JSON with comments
 
 ## 📋 Prerequisites
 
