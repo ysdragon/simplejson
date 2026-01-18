@@ -10,7 +10,7 @@ aPackageInfo = [
 	:versions = 	[
 		[
 			:version = "1.1.0",
-			:branch = "master"
+			:branch = "1.1.0"
 		]
 	],
 	:libs = 	[
@@ -99,4 +99,5 @@ aPackageInfo = [
 	:macosremove = "",
 	:ubunturemove = "",
 	:fedoraremove = ""
+
 ]
