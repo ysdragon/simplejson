@@ -101,7 +101,7 @@ if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/glaze/CMakeLists.txt")
     FetchContent_Declare(
         glaze
         GIT_REPOSITORY https://github.com/stephenberry/glaze.git
-        GIT_TAG        v7.0.1
+        GIT_TAG        v7.2.1
     )
     FetchContent_MakeAvailable(glaze)
 else()
