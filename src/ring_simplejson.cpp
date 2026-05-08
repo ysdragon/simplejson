@@ -63,7 +63,7 @@ static void json_value_to_ring_item(void *pState, const glz::generic &value, Lis
 	}
 	else if (auto *b = value.get_if<bool>())
 	{
-		ring_list_adddouble_gc(pState, pList, *b ? 1.0 : 0.0);
+		ring_list_addstring_gc(pState, pList, *b ? "__JSON_TRUE__" : "__JSON_FALSE__");
 	}
 	else
 	{
@@ -198,7 +198,19 @@ static glz::generic ring_item_to_json_value(VM *pVM, Item *pItem, List *pVisited
 		}
 		else
 		{
-			result.data = std::string(ring_string_get(pString));
+			const char *s = ring_string_get(pString);
+			if (strcmp(s, "__JSON_TRUE__") == 0)
+			{
+				result.data = true;
+			}
+			else if (strcmp(s, "__JSON_FALSE__") == 0)
+			{
+				result.data = false;
+			}
+			else
+			{
+				result.data = std::string(s);
+			}
 		}
 		break;
 	}
@@ -282,6 +294,70 @@ RING_FUNC(ring_json_encode)
 RING_FUNC(ring_json_version)
 {
 	RING_API_RETSTRING(GLAZE_VERSION_STRING);
+}
+
+RING_FUNC(ring_json_true)
+{
+	RING_API_RETSTRING("__JSON_TRUE__");
+}
+
+RING_FUNC(ring_json_false)
+{
+	RING_API_RETSTRING("__JSON_FALSE__");
+}
+
+RING_FUNC(ring_json_is_true)
+{
+	if (RING_API_PARACOUNT != 1)
+	{
+		RING_API_ERROR(RING_API_MISS1PARA);
+		return;
+	}
+	if (!RING_API_ISSTRING(1))
+	{
+		RING_API_RETNUMBER(0.0);
+		return;
+	}
+	RING_API_RETNUMBER(strcmp(RING_API_GETSTRING(1), "__JSON_TRUE__") == 0 ? 1.0 : 0.0);
+}
+
+RING_FUNC(ring_json_is_false)
+{
+	if (RING_API_PARACOUNT != 1)
+	{
+		RING_API_ERROR(RING_API_MISS1PARA);
+		return;
+	}
+	if (!RING_API_ISSTRING(1))
+	{
+		RING_API_RETNUMBER(0.0);
+		return;
+	}
+	RING_API_RETNUMBER(strcmp(RING_API_GETSTRING(1), "__JSON_FALSE__") == 0 ? 1.0 : 0.0);
+}
+
+RING_FUNC(ring_json_tobool)
+{
+	if (RING_API_PARACOUNT != 1)
+	{
+		RING_API_ERROR(RING_API_MISS1PARA);
+		return;
+	}
+	if (RING_API_ISSTRING(1))
+	{
+		const char *s = RING_API_GETSTRING(1);
+		if (strcmp(s, "__JSON_TRUE__") == 0)
+		{
+			RING_API_RETNUMBER(1.0);
+			return;
+		}
+		if (strcmp(s, "__JSON_FALSE__") == 0)
+		{
+			RING_API_RETNUMBER(0.0);
+			return;
+		}
+	}
+	RING_API_ERROR("Not a JSON boolean value.");
 }
 
 RING_FUNC(ring_json_valid)
@@ -1909,6 +1985,11 @@ RING_LIBINIT
 	RING_API_REGISTER("json_decode", ring_json_decode);
 	RING_API_REGISTER("json_encode", ring_json_encode);
 	RING_API_REGISTER("json_version", ring_json_version);
+	RING_API_REGISTER("json_true", ring_json_true);
+	RING_API_REGISTER("json_false", ring_json_false);
+	RING_API_REGISTER("json_is_true", ring_json_is_true);
+	RING_API_REGISTER("json_is_false", ring_json_is_false);
+	RING_API_REGISTER("json_tobool", ring_json_tobool);
 	RING_API_REGISTER("json_valid", ring_json_valid);
 	RING_API_REGISTER("json_minify", ring_json_minify);
 	RING_API_REGISTER("json_prettify", ring_json_prettify);
