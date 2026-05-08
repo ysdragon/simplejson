@@ -194,6 +194,14 @@ class SimpleJSONTest
 		run("json_to_toml", :testJsonToToml)
 		? ""
 
+		? "JSON Booleans:"
+		run("json_true / json_false", :testJsonBoolCreate)
+		run("json_is_true / json_is_false", :testJsonBoolCheck)
+		run("json_tobool", :testJsonTobool)
+		run("boolean round-trip", :testJsonBoolRoundTrip)
+		run("boolean vs number distinction", :testJsonBoolVsNumber)
+		? ""
+
 		cleanup()
 
 		? "========================================"
@@ -383,3 +391,34 @@ class SimpleJSONTest
 		json = '{"name":"Test"}'
 		result = json_to_toml(json)
 		assert(substr(result, 'name = "Test"') > 0, "should contain name = Test")
+
+	func testJsonBoolCreate
+		data = [["active", json_true()], ["disabled", json_false()]]
+		result = json_encode(data)
+		assert(substr(result, '"active":true') > 0, "json_true should encode as true")
+		assert(substr(result, '"disabled":false') > 0, "json_false should encode as false")
+
+	func testJsonBoolCheck
+		data = json_decode('{"enabled": true, "muted": false}')
+		assertEqual(json_is_true(data[:enabled]), 1, "enabled is true")
+		assertEqual(json_is_false(data[:muted]), 1, "muted is false")
+		assertEqual(json_is_true(data[:muted]), 0, "muted is not true")
+		assertEqual(json_is_false(data[:enabled]), 0, "enabled is not false")
+
+	func testJsonTobool
+		data = json_decode('{"on": true, "off": false}')
+		assertEqual(json_tobool(data[:on]), 1, "true converts to 1")
+		assertEqual(json_tobool(data[:off]), 0, "false converts to 0")
+
+	func testJsonBoolRoundTrip
+		original = '{"active": true, "disabled": false}'
+		decoded = json_decode(original)
+		restored = json_encode(decoded)
+		assert(substr(restored, '"active":true') > 0, "true preserved in round-trip")
+		assert(substr(restored, '"disabled":false') > 0, "false preserved in round-trip")
+
+	func testJsonBoolVsNumber
+		data = [["flag", json_true()], ["count", 1]]
+		result = json_encode(data)
+		assert(substr(result, '"flag":true') > 0, "flag should be boolean true")
+		assert(substr(result, '"count":1') > 0, "count should be number 1")
