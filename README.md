@@ -145,6 +145,69 @@ Returns the version of the underlying Glaze library.
 -   **Parameters:** None
 -   **Returns:** A string representing the Glaze library version
 
+### `json_true()`
+
+Returns a JSON boolean `true` value for use in Ring lists.
+
+-   **Parameters:** None
+-   **Returns:** A value that encodes as JSON `true`
+
+### `json_false()`
+
+Returns a JSON boolean `false` value for use in Ring lists.
+
+-   **Parameters:** None
+-   **Returns:** A value that encodes as JSON `false`
+
+### `json_is_true(value)`
+
+Checks if a value is a JSON boolean `true`.
+
+-   **Parameters:**
+    -   `value`: A Ring value (typically from `json_decode`)
+-   **Returns:** `1` if the value is JSON `true`, `0` otherwise
+
+### `json_is_false(value)`
+
+Checks if a value is a JSON boolean `false`.
+
+-   **Parameters:**
+    -   `value`: A Ring value (typically from `json_decode`)
+-   **Returns:** `1` if the value is JSON `false`, `0` otherwise
+
+### `json_tobool(value)`
+
+Converts a JSON boolean value to a Ring boolean (1 or 0).
+
+-   **Parameters:**
+    -   `value`: A Ring value (typically from `json_decode`)
+-   **Returns:** `1` for JSON `true`, `0` for JSON `false`
+-   **Raises:** Error if the value is not a JSON boolean
+
+```ring
+# Creating JSON booleans
+myData = [
+    ["active", json_true()],
+    ["disabled", json_false()],
+    ["count", 1]  # Regular number, not boolean
+]
+? json_encode(myData)
+# Output: {"active":true,"count":1,"disabled":false}
+
+# Decoding and checking booleans
+data = json_decode('{"active": true, "count": 1}')
+? json_is_true(data[:active])   # Output: 1
+? json_is_false(data[:active])  # Output: 0
+? json_tobool(data[:active])    # Output: 1
+
+# Round-trip: booleans are preserved
+original = '{"enabled": true, "disabled": false}'
+decoded = json_decode(original)
+restored = json_encode(decoded)
+? restored
+# Output: {"disabled":false,"enabled":true}
+```
+
 ### `json_valid(jsonString)`
 
 Validates whether a string is valid JSON.
