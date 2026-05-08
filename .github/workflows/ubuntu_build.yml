@@ -25,12 +25,12 @@ jobs:
         sudo apt-get install -y cmake build-essential libwebkitgtk-6.0-dev
 
     - name: Checkout ring-simplejson
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         submodules: recursive
 
     - name: Clone Ring Language
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         repository: ringpackages/ringsrc
         path: ring
