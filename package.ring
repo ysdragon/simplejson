@@ -45,6 +45,7 @@ aPackageInfo = [
 		"examples/14_json_comments.ring",
 		"examples/15_csv_conversion.ring",
 		"examples/16_toml_conversion.ring",
+        "examples/17_json_booleans.ring",
 		"LICENSE",
 		"README.md",
 		"src/ring_simplejson.cpp",
